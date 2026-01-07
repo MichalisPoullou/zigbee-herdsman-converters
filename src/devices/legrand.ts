@@ -757,6 +757,19 @@ export const definitions: DefinitionWithExtend[] = [
         }),
     ],
 },
+        zigbeeModel: ["NLIS - Triple light switch"],
+        model: "281506",
+        vendor: "Legrand",
+        description: "Triple light switch",
+        ota: true,
+        fromZigbee: [fz.identify, fz.legrand_binary_input_on_off, fzLegrand.cluster_fc01],
+        toZigbee: [tzLegrand.identify, tzLegrand.led_mode],
+        exposes: [eLegrand.ledInDark(), eLegrand.ledIfOn()],
+        extend: [
+            m.deviceEndpoints({endpoints: {right: 1, center: 2, left: 3}}),
+            m.onOff({configureReporting: true, endpointNames: ["right", "center", "left"]}),
+        ],
+    },
     {
         zigbeeModel: [" Wireless Color Dimmer\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"],
         model: "067767",
@@ -772,3 +785,50 @@ export const definitions: DefinitionWithExtend[] = [
         },
     },
 ];
+{
+    zigbeeModel: ['NLIS - Light switch'],
+    model: '281502',
+    vendor: 'Legrand',
+    description: 'Single light switch',
+    ota: true,
+
+    fromZigbee: [
+        fz.identify,
+        fz.legrand_binary_input_on_off,
+        fzLegrand.cluster_fc01,
+    ],
+
+    toZigbee: [
+        tzLegrand.identify,
+        tzLegrand.led_mode,
+    ],
+
+    exposes: [
+        eLegrand.ledInDark(),
+        eLegrand.ledIfOn(),
+    ],
+
+    extend: [
+        modernExtend.deviceEndpoints({
+            endpoints: {
+                switch: 1,
+            },
+        }),
+        modernExtend.binary({
+            name: 'binary_input_1',
+            cluster: 'genBinaryInput',
+            attribute: 'presentValue',
+            reporting: {min: 'MIN', max: 'MAX', change: 1},
+            valueOn: ['ON', 1],
+            valueOff: ['OFF', 0],
+            description: 'binary_input_1',
+            access: 'STATE_GET',
+            endpointName: 'switch',
+        }),
+        modernExtend.onOff({
+            configureReporting: true,
+            endpointNames: ['switch'],
+        }),
+        modernExtend.commandsOnOff(),
+    ],
+};
